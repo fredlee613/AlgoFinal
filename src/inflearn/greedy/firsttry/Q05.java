@@ -1,4 +1,4 @@
-package inflearn.greedy;
+package inflearn.greedy.firsttry;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -7,12 +7,17 @@ import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 /**
- * 4. 최대 수입 스케쥴(PriorityQueue 응용문제)
+ * 5. 다익스트라 알고리즘
  */
-public class R05 {
-    static class Edge implements Comparable<Edge>{
+public class Q05 {
+    static int n, m;
+    static int[] dis;
+    static ArrayList<ArrayList<Edge>> graph;
+
+    static class Edge implements Comparable<Edge> {
         int vertex;
         int cost;
+
         public Edge(int vertex, int cost) {
             this.vertex = vertex;
             this.cost = cost;
@@ -22,51 +27,61 @@ public class R05 {
         public int compareTo(Edge o) {
             return this.cost - o.cost;
         }
-    }
 
-    static int n, m;
-    static int[] dis;
-    static ArrayList<ArrayList<Edge>> list = new ArrayList<>();
+        @Override
+        public String toString() {
+            return "(" + vertex + ", " + cost + ")";
+        }
+    }
 
     public void findShortestPath(int v) {
         dis[v] = 0;
-        PriorityQueue<Edge> pq = new PriorityQueue<>();
-        pq.offer(new Edge(v, 0));
-        while (!pq.isEmpty()) {
-            Edge ce = pq.poll();
+        PriorityQueue<Edge> q = new PriorityQueue<>();
+        q.offer(new Edge(v, 0));
+        while (!q.isEmpty()) {
+//            System.out.println("q = " + q.toString());
+            Edge ce = q.poll();
             int cv = ce.vertex;
             int cc = ce.cost;
             if (dis[cv] < cc) continue;
-            for (Edge edge : list.get(cv)) {
+            for (Edge edge : graph.get(cv)) {
+//                System.out.println("edge = " + edge);
                 if (dis[edge.vertex] > cc + edge.cost) {
                     dis[edge.vertex] = cc + edge.cost;
-                    pq.offer(new Edge(edge.vertex, edge.cost + cc));
+                    q.offer(new Edge(edge.vertex, cc + edge.cost));
                 }
             }
         }
     }
 
     public static void main(String[] args) throws IOException {
-        R05 main = new R05();
+        Q05 main = new Q05();
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter stdOut = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(stdIn.readLine());
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
-        dis = new int[n+1];
+        dis = new int[n + 1];
         Arrays.fill(dis, Integer.MAX_VALUE);
-        for (int i = 0; i <= n; i++) list.add(new ArrayList<>());
-        for (int i = 1; i <= m; i++) {
+        graph = new ArrayList<>();
+        for (int i = 0; i <= n; i++) graph.add(new ArrayList<>());
+
+        for (int i = 0; i < m; i++) {
             st = new StringTokenizer(stdIn.readLine());
-            list.get(Integer.parseInt(st.nextToken())).add(new Edge(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            graph.get(a).add(new Edge(b, c));
         }
+
         main.findShortestPath(1);
+//        System.out.println("dis = " + Arrays.toString(dis));
         for (int i = 2; i <= n; i++) {
             String tmp = i + " : ";
-            if (dis[i] != Integer.MAX_VALUE) tmp += dis[i];
-            else tmp += "impossible";
-
+            if (dis[i] == Integer.MAX_VALUE) tmp += "impossible";
+            else tmp += dis[i];
             if (i != n) tmp += "\n";
+
             stdOut.write(tmp);
         }
         stdOut.flush();

@@ -1,9 +1,7 @@
-package inflearn.greedy;
+package inflearn.greedy.firsttry;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.StringTokenizer;
 
 /**

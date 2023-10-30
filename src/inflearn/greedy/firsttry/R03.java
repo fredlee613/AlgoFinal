@@ -1,4 +1,4 @@
-package inflearn.greedy;
+package inflearn.greedy.firsttry;
 
 import java.io.*;
 import java.util.*;
